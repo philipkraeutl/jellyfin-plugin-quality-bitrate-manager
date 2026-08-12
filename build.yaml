@@ -1,0 +1,17 @@
+---
+name: "Quality Bitrate Manager"
+guid: "fb632c57-b35d-4a47-a91d-f7088f0cb15e"
+version: "1.0.0.0"
+targetAbi: "10.11.0.0"
+framework: "net9.0"
+overview: "Applies per-user remote bitrate limits based on the original video resolution."
+description: >
+  Dynamically updates Jellyfin's per-user RemoteClientBitrateLimit before playback
+  selection, supports concurrent streams, and includes a bandwidth planning assistant.
+category: "General"
+owner: "philipkraeutl"
+artifacts:
+- "Jellyfin.Plugin.QualityBitrateManager.dll"
+changelog: >
+  Initial release for Jellyfin 10.11.x with quality-based limits, an early
+  PlaybackInfo hook, concurrent-stream tracking, bilingual UI and bandwidth assistant.

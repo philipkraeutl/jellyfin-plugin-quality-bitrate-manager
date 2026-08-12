@@ -1,0 +1,27 @@
+name: Build and test
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        jellyfin-version: [10.11.0, 10.11.11]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+      - run: dotnet restore QualityBitrateManager.slnx -p:JellyfinVersion=${{ matrix.jellyfin-version }}
+      - run: dotnet test QualityBitrateManager.slnx --configuration Release --no-restore -p:JellyfinVersion=${{ matrix.jellyfin-version }}
+      - run: dotnet publish src/Jellyfin.Plugin.QualityBitrateManager --configuration Release --no-restore -p:JellyfinVersion=${{ matrix.jellyfin-version }}
+      - name: Upload plugin DLL
+        uses: actions/upload-artifact@v4
+        with:
+          name: quality-bitrate-manager-${{ matrix.jellyfin-version }}-${{ github.sha }}
+          path: src/Jellyfin.Plugin.QualityBitrateManager/bin/Release/net9.0/publish/Jellyfin.Plugin.QualityBitrateManager.dll
+          if-no-files-found: error

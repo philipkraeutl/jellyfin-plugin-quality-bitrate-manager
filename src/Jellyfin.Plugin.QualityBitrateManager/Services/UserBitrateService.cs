@@ -5,7 +5,6 @@ namespace Jellyfin.Plugin.QualityBitrateManager.Services;
 
 public sealed class UserBitrateService(IUserManager userManager, ILogger<UserBitrateService> logger)
 {
-    public IEnumerable<Guid> UserIds => userManager.GetUsersIds();
     public async Task SetAsync(Guid userId, long desiredLimit)
     {
         var user = userManager.GetUserById(userId);

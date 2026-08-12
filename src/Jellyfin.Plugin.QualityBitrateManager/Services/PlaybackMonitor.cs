@@ -20,7 +20,7 @@ public sealed class PlaybackMonitor(
     private readonly System.Collections.Concurrent.ConcurrentDictionary<string, (int? Width, int? Height)> _sourceDimensions = new();
     private readonly CancellationTokenSource _cleanupCancellation = new();
     private Task? _cleanupTask;
-    public async Task StartAsync(CancellationToken cancellationToken)
+    public Task StartAsync(CancellationToken cancellationToken)
     {
         sessions.PlaybackStart += OnPlaybackStart;
         sessions.PlaybackProgress += OnPlaybackProgress;
@@ -28,10 +28,7 @@ public sealed class PlaybackMonitor(
         sessions.SessionEnded += OnSessionEnded;
         _cleanupTask = CleanupPendingAsync(_cleanupCancellation.Token);
 
-        // In-memory playback state cannot survive a restart. Reset every user currently known
-        // through sessions; subsequent playback events reconstruct the conservative state.
-        foreach (var userId in users.UserIds)
-            await SetDefaultAsync(userId).ConfigureAwait(false);
+        return Task.CompletedTask;
     }
 
     public async Task StopAsync(CancellationToken cancellationToken)
