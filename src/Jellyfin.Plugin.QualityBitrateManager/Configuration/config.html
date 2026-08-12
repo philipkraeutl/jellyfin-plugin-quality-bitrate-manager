@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html><head><title>Quality Bitrate Manager</title></head>
+<body><div id="qualityBitrateManagerPage" data-role="page" class="page type-interior pluginConfigurationPage" data-require="emby-input,emby-button,emby-checkbox">
+<div data-role="content"><div class="content-primary"><form id="qualityBitrateManagerForm">
+<h2>Standard-Bitratenlimit</h2><div class="inputContainer"><label class="inputLabel" for="StandardBitrateMbps">Standard-Bitratenlimit (Mbit/s)</label><input id="StandardBitrateMbps" type="number" min="0.1" step="0.1" required is="emby-input" /></div>
+<h2>Qualitätsabhängige Limits</h2><div id="qualityRules">
+<div class="checkboxContainer"><label class="emby-checkbox-label"><input id="Enable2160p" type="checkbox" is="emby-checkbox"/><span>2160p / 4K</span></label></div><div class="inputContainer"><label class="inputLabel" for="Bitrate2160pMbps">Limit (Mbit/s)</label><input id="Bitrate2160pMbps" type="number" min="0.1" step="0.1" required is="emby-input"/></div>
+<div class="checkboxContainer"><label class="emby-checkbox-label"><input id="Enable1440p" type="checkbox" is="emby-checkbox"/><span>1440p</span></label></div><div class="inputContainer"><label class="inputLabel" for="Bitrate1440pMbps">Limit (Mbit/s)</label><input id="Bitrate1440pMbps" type="number" min="0.1" step="0.1" required is="emby-input"/></div>
+<div class="checkboxContainer"><label class="emby-checkbox-label"><input id="Enable1080p" type="checkbox" is="emby-checkbox"/><span>1080p</span></label></div><div class="inputContainer"><label class="inputLabel" for="Bitrate1080pMbps">Limit (Mbit/s)</label><input id="Bitrate1080pMbps" type="number" min="0.1" step="0.1" required is="emby-input"/></div>
+<div class="checkboxContainer"><label class="emby-checkbox-label"><input id="Enable720p" type="checkbox" is="emby-checkbox"/><span>720p</span></label></div><div class="inputContainer"><label class="inputLabel" for="Bitrate720pMbps">Limit (Mbit/s)</label><input id="Bitrate720pMbps" type="number" min="0.1" step="0.1" required is="emby-input"/></div>
+<div class="checkboxContainer"><label class="emby-checkbox-label"><input id="Enable480p" type="checkbox" is="emby-checkbox"/><span>480p</span></label></div><div class="inputContainer"><label class="inputLabel" for="Bitrate480pMbps">Limit (Mbit/s)</label><input id="Bitrate480pMbps" type="number" min="0.1" step="0.1" required is="emby-input"/></div>
+</div>
+<div><button is="emby-button" type="submit" class="raised button-submit block"><span>Speichern</span></button></div>
+</form></div></div>
+<script type="text/javascript">
+(function () {
+ const pluginId='fb632c57-b35d-4a47-a91d-f7088f0cb15e';
+ const rules=[['2160p','2160p / 4K'],['1440p','1440p'],['1080p','1080p'],['720p','720p'],['480p','480p']];
+ function readNumber(element){return Number(String(element.value).replace(',','.'));}
+ function toggle(key){document.querySelector('#qualityBitrateManagerPage #Bitrate'+key+'Mbps').disabled=!document.querySelector('#qualityBitrateManagerPage #Enable'+key).checked;}
+ rules.forEach(([key])=>document.querySelector('#qualityBitrateManagerPage #Enable'+key).addEventListener('change',()=>toggle(key)));
+ document.querySelector('#qualityBitrateManagerPage').addEventListener('pageshow',()=>{Dashboard.showLoadingMsg();ApiClient.getPluginConfiguration(pluginId).then(c=>{document.querySelector('#qualityBitrateManagerPage #StandardBitrateMbps').value=c.StandardBitrateMbps;rules.forEach(([key])=>{document.querySelector('#qualityBitrateManagerPage #Enable'+key).checked=c['Enable'+key];document.querySelector('#qualityBitrateManagerPage #Bitrate'+key+'Mbps').value=c['Bitrate'+key+'Mbps'];toggle(key);});Dashboard.hideLoadingMsg();});});
+ document.querySelector('#qualityBitrateManagerForm').addEventListener('submit',e=>{e.preventDefault();const standard=readNumber(document.querySelector('#qualityBitrateManagerPage #StandardBitrateMbps'));const invalid=!Number.isFinite(standard)||standard<=0||rules.some(([key])=>{const value=readNumber(document.querySelector('#qualityBitrateManagerPage #Bitrate'+key+'Mbps'));return document.querySelector('#qualityBitrateManagerPage #Enable'+key).checked&&(!Number.isFinite(value)||value<=0);});if(invalid){Dashboard.alert('Standardlimit und aktivierte Regeln benötigen eine gültige Zahl größer als 0. Kommawerte sind erlaubt.');return;}Dashboard.showLoadingMsg();ApiClient.getPluginConfiguration(pluginId).then(c=>{c.StandardBitrateMbps=standard;rules.forEach(([key])=>{c['Enable'+key]=document.querySelector('#qualityBitrateManagerPage #Enable'+key).checked;c['Bitrate'+key+'Mbps']=readNumber(document.querySelector('#qualityBitrateManagerPage #Bitrate'+key+'Mbps'));});return ApiClient.updatePluginConfiguration(pluginId,c);}).then(Dashboard.processPluginConfigurationUpdateResult);});
+})();
+</script></div></body></html>

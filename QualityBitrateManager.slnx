@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="src/Jellyfin.Plugin.QualityBitrateManager/Jellyfin.Plugin.QualityBitrateManager.csproj" />
+  <Project Path="tests/Jellyfin.Plugin.QualityBitrateManager.Tests/Jellyfin.Plugin.QualityBitrateManager.Tests.csproj" />
+</Solution>

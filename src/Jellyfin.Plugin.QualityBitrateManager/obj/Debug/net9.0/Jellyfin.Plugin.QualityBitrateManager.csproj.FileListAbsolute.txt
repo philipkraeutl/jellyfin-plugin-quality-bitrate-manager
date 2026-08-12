@@ -1,0 +1,15 @@
+C:\Data\GitHub\Entwicklung\jellyfin-plugin-quality-bitrate-manager\src\Jellyfin.Plugin.QualityBitrateManager\obj\Debug\net9.0\Jellyfin.Plugin.QualityBitrateManager.csproj.AssemblyReference.cache
+C:\Data\GitHub\Entwicklung\jellyfin-plugin-quality-bitrate-manager\src\Jellyfin.Plugin.QualityBitrateManager\obj\Debug\net9.0\Jellyfin.Plugin.QualityBitrateManager.GeneratedMSBuildEditorConfig.editorconfig
+C:\Data\GitHub\Entwicklung\jellyfin-plugin-quality-bitrate-manager\src\Jellyfin.Plugin.QualityBitrateManager\obj\Debug\net9.0\Jellyfin.Plugin.QualityBitrateManager.AssemblyInfoInputs.cache
+C:\Data\GitHub\Entwicklung\jellyfin-plugin-quality-bitrate-manager\src\Jellyfin.Plugin.QualityBitrateManager\obj\Debug\net9.0\Jellyfin.Plugin.QualityBitrateManager.AssemblyInfo.cs
+C:\Data\GitHub\Entwicklung\jellyfin-plugin-quality-bitrate-manager\src\Jellyfin.Plugin.QualityBitrateManager\obj\Debug\net9.0\Jellyfin.Plugin.QualityBitrateManager.csproj.CoreCompileInputs.cache
+C:\Data\GitHub\Entwicklung\jellyfin-plugin-quality-bitrate-manager\src\Jellyfin.Plugin.QualityBitrateManager\obj\Debug\net9.0\Jellyfin.Plugin.QualityBitrateManager.sourcelink.json
+C:\Data\GitHub\Entwicklung\jellyfin-plugin-quality-bitrate-manager\src\Jellyfin.Plugin.QualityBitrateManager\bin\Debug\net9.0\Jellyfin.Plugin.QualityBitrateManager.deps.json
+C:\Data\GitHub\Entwicklung\jellyfin-plugin-quality-bitrate-manager\src\Jellyfin.Plugin.QualityBitrateManager\bin\Debug\net9.0\Jellyfin.Plugin.QualityBitrateManager.dll
+C:\Data\GitHub\Entwicklung\jellyfin-plugin-quality-bitrate-manager\src\Jellyfin.Plugin.QualityBitrateManager\bin\Debug\net9.0\Jellyfin.Plugin.QualityBitrateManager.pdb
+C:\Data\GitHub\Entwicklung\jellyfin-plugin-quality-bitrate-manager\src\Jellyfin.Plugin.QualityBitrateManager\bin\Debug\net9.0\Jellyfin.Plugin.QualityBitrateManager.xml
+C:\Data\GitHub\Entwicklung\jellyfin-plugin-quality-bitrate-manager\src\Jellyfin.Plugin.QualityBitrateManager\obj\Debug\net9.0\Jellyfin.Plugin.QualityBitrateManager.dll
+C:\Data\GitHub\Entwicklung\jellyfin-plugin-quality-bitrate-manager\src\Jellyfin.Plugin.QualityBitrateManager\obj\Debug\net9.0\refint\Jellyfin.Plugin.QualityBitrateManager.dll
+C:\Data\GitHub\Entwicklung\jellyfin-plugin-quality-bitrate-manager\src\Jellyfin.Plugin.QualityBitrateManager\obj\Debug\net9.0\Jellyfin.Plugin.QualityBitrateManager.xml
+C:\Data\GitHub\Entwicklung\jellyfin-plugin-quality-bitrate-manager\src\Jellyfin.Plugin.QualityBitrateManager\obj\Debug\net9.0\Jellyfin.Plugin.QualityBitrateManager.pdb
+C:\Data\GitHub\Entwicklung\jellyfin-plugin-quality-bitrate-manager\src\Jellyfin.Plugin.QualityBitrateManager\obj\Debug\net9.0\ref\Jellyfin.Plugin.QualityBitrateManager.dll
