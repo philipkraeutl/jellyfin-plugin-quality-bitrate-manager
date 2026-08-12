@@ -1,0 +1,1 @@
+# jellyfin-plugin-quality-bitrate-manager
