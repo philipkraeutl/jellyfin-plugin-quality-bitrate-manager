@@ -1,25 +1,143 @@
 <!DOCTYPE html>
-<html><head><title>Quality Bitrate Manager</title></head>
-<body><div id="qualityBitrateManagerPage" data-role="page" class="page type-interior pluginConfigurationPage" data-require="emby-input,emby-button,emby-checkbox">
+<html lang="de">
+<head>
+    <meta charset="utf-8">
+    <title>Quality Bitrate Manager</title>
+</head>
+<body>
+    <style>
+        #qualityBitrateManagerPage .qbmIntro { color: var(--textSecondary); line-height: 1.45; margin: -.4em 0 1.5em; }
+        #qualityBitrateManagerPage .qbmSection { margin-bottom: 2.2em; }
+        #qualityBitrateManagerPage .qbmRule { background: rgba(255,255,255,.075); border: 1px solid rgba(255,255,255,.13); border-radius: .75em; box-shadow: 0 .25em .8em rgba(0,0,0,.2); margin: 0 0 1.1em; overflow: hidden; transition: border-color .15s, background .15s, box-shadow .15s; }
+        #qualityBitrateManagerPage .qbmRule.isEnabled { background: rgba(255,255,255,.095); border-color: rgba(0,164,220,.75); box-shadow: 0 .25em .9em rgba(0,0,0,.28), inset .22em 0 0 var(--theme-primary-color); }
+        #qualityBitrateManagerPage .qbmRuleHeader { align-items: center; display: flex; justify-content: space-between; gap: 1em; min-height: 3.5em; padding: .8em 1.15em; }
+        #qualityBitrateManagerPage .qbmRuleTitle { font-size: 1.15em; font-weight: 600; margin: 0; }
+        #qualityBitrateManagerPage .qbmRule .checkboxContainer { flex: 0 0 auto; margin: 0; }
+        #qualityBitrateManagerPage .qbmRuleEditor { background: rgba(0,0,0,.14); border-top: 1px solid rgba(255,255,255,.1); padding: 1.1em 1.15em .25em; }
+        #qualityBitrateManagerPage .qbmRuleEditor[hidden] { display: none !important; }
+        #qualityBitrateManagerPage .qbmSuggestion { align-items: center; background: rgba(0,164,220,.1); border: 1px solid rgba(0,164,220,.28); border-radius: .45em; color: var(--textSecondary); display: flex; gap: .8em; justify-content: space-between; margin: 0 0 1em; padding: .65em .8em; }
+        #qualityBitrateManagerPage .qbmSuggestion button { background: var(--theme-primary-color); border: 0; border-radius: .35em; color: #fff; cursor: pointer; font-weight: 600; padding: .45em .8em; white-space: nowrap; }
+        #qualityBitrateManagerPage .qbmSuggestion[hidden] { display: none !important; }
+        #qualityBitrateManagerPage .qbmSave { margin-top: 1.5em; }
+    </style>
+<div id="qualityBitrateManagerPage" data-role="page" class="page type-interior pluginConfigurationPage" data-require="emby-input,emby-button,emby-checkbox">
 <div data-role="content"><div class="content-primary"><form id="qualityBitrateManagerForm">
-<h2>Standard-Bitratenlimit</h2><div class="inputContainer"><label class="inputLabel" for="StandardBitrateMbps">Standard-Bitratenlimit (Mbit/s)</label><input id="StandardBitrateMbps" type="number" min="0.1" step="0.1" required is="emby-input" /></div>
-<h2>Qualitätsabhängige Limits</h2><div id="qualityRules">
-<div class="checkboxContainer"><label class="emby-checkbox-label"><input id="Enable2160p" type="checkbox" is="emby-checkbox"/><span>2160p / 4K</span></label></div><div class="inputContainer"><label class="inputLabel" for="Bitrate2160pMbps">Limit (Mbit/s)</label><input id="Bitrate2160pMbps" type="number" min="0.1" step="0.1" required is="emby-input"/></div>
-<div class="checkboxContainer"><label class="emby-checkbox-label"><input id="Enable1440p" type="checkbox" is="emby-checkbox"/><span>1440p</span></label></div><div class="inputContainer"><label class="inputLabel" for="Bitrate1440pMbps">Limit (Mbit/s)</label><input id="Bitrate1440pMbps" type="number" min="0.1" step="0.1" required is="emby-input"/></div>
-<div class="checkboxContainer"><label class="emby-checkbox-label"><input id="Enable1080p" type="checkbox" is="emby-checkbox"/><span>1080p</span></label></div><div class="inputContainer"><label class="inputLabel" for="Bitrate1080pMbps">Limit (Mbit/s)</label><input id="Bitrate1080pMbps" type="number" min="0.1" step="0.1" required is="emby-input"/></div>
-<div class="checkboxContainer"><label class="emby-checkbox-label"><input id="Enable720p" type="checkbox" is="emby-checkbox"/><span>720p</span></label></div><div class="inputContainer"><label class="inputLabel" for="Bitrate720pMbps">Limit (Mbit/s)</label><input id="Bitrate720pMbps" type="number" min="0.1" step="0.1" required is="emby-input"/></div>
-<div class="checkboxContainer"><label class="emby-checkbox-label"><input id="Enable480p" type="checkbox" is="emby-checkbox"/><span>480p</span></label></div><div class="inputContainer"><label class="inputLabel" for="Bitrate480pMbps">Limit (Mbit/s)</label><input id="Bitrate480pMbps" type="number" min="0.1" step="0.1" required is="emby-input"/></div>
-</div>
-<div><button is="emby-button" type="submit" class="raised button-submit block"><span>Speichern</span></button></div>
+    <section class="qbmSection"><h2 id="standardHeading">Standard-Bitratenlimit</h2>
+    <p class="qbmIntro" id="standardDescription">Dieses Limit wird verwendet, wenn keine aktive Qualitätsregel passt.</p>
+    <div class="inputContainer"><label class="inputLabel" id="standardLabel" for="StandardBitrateMbps">Standardlimit (Mbit/s)</label><input id="StandardBitrateMbps" type="number" min="0.1" step="0.1" required is="emby-input"></div></section>
+
+    <h2 id="qualityHeading">Qualitätsabhängige Limits</h2>
+    <p class="qbmIntro" id="qualityDescription">Aktiviere nur die gewünschten Stufen. Vorschläge werden jeweils aus der nächsten aktivierten höheren Stufe berechnet.</p>
+    <div id="qualityRules">
+        <div class="qbmRule" data-key="2160p"><div class="qbmRuleHeader"><h3 class="qbmRuleTitle">2160p / 4K / UHD</h3><div class="checkboxContainer"><label class="emby-checkbox-label"><input id="Enable2160p" type="checkbox" is="emby-checkbox"><span class="qbmEnableLabel">Aktivieren</span></label></div></div><div class="qbmRuleEditor"><div class="qbmSuggestion" hidden></div><div class="inputContainer"><label class="inputLabel qbmLimitLabel" for="Bitrate2160pMbps"></label><input id="Bitrate2160pMbps" type="number" min="0.1" step="0.1" required is="emby-input"></div></div></div>
+        <div class="qbmRule" data-key="1440p"><div class="qbmRuleHeader"><h3 class="qbmRuleTitle">1440p / QHD</h3><div class="checkboxContainer"><label class="emby-checkbox-label"><input id="Enable1440p" type="checkbox" is="emby-checkbox"><span class="qbmEnableLabel">Aktivieren</span></label></div></div><div class="qbmRuleEditor"><div class="qbmSuggestion" hidden></div><div class="inputContainer"><label class="inputLabel qbmLimitLabel" for="Bitrate1440pMbps"></label><input id="Bitrate1440pMbps" type="number" min="0.1" step="0.1" required is="emby-input"></div></div></div>
+        <div class="qbmRule" data-key="1080p"><div class="qbmRuleHeader"><h3 class="qbmRuleTitle">1080p / Full HD</h3><div class="checkboxContainer"><label class="emby-checkbox-label"><input id="Enable1080p" type="checkbox" is="emby-checkbox"><span class="qbmEnableLabel">Aktivieren</span></label></div></div><div class="qbmRuleEditor"><div class="qbmSuggestion" hidden></div><div class="inputContainer"><label class="inputLabel qbmLimitLabel" for="Bitrate1080pMbps"></label><input id="Bitrate1080pMbps" type="number" min="0.1" step="0.1" required is="emby-input"></div></div></div>
+        <div class="qbmRule" data-key="720p"><div class="qbmRuleHeader"><h3 class="qbmRuleTitle">720p / HD</h3><div class="checkboxContainer"><label class="emby-checkbox-label"><input id="Enable720p" type="checkbox" is="emby-checkbox"><span class="qbmEnableLabel">Aktivieren</span></label></div></div><div class="qbmRuleEditor"><div class="qbmSuggestion" hidden></div><div class="inputContainer"><label class="inputLabel qbmLimitLabel" for="Bitrate720pMbps"></label><input id="Bitrate720pMbps" type="number" min="0.1" step="0.1" required is="emby-input"></div></div></div>
+        <div class="qbmRule" data-key="480p"><div class="qbmRuleHeader"><h3 class="qbmRuleTitle">480p / SD</h3><div class="checkboxContainer"><label class="emby-checkbox-label"><input id="Enable480p" type="checkbox" is="emby-checkbox"><span class="qbmEnableLabel">Aktivieren</span></label></div></div><div class="qbmRuleEditor"><div class="qbmSuggestion" hidden></div><div class="inputContainer"><label class="inputLabel qbmLimitLabel" for="Bitrate480pMbps"></label><input id="Bitrate480pMbps" type="number" min="0.1" step="0.1" required is="emby-input"></div></div></div>
+    </div>
+    <button is="emby-button" type="submit" class="raised button-submit block qbmSave"><span id="saveLabel">Speichern</span></button>
 </form></div></div>
 <script type="text/javascript">
 (function () {
- const pluginId='fb632c57-b35d-4a47-a91d-f7088f0cb15e';
- const rules=[['2160p','2160p / 4K'],['1440p','1440p'],['1080p','1080p'],['720p','720p'],['480p','480p']];
- function readNumber(element){return Number(String(element.value).replace(',','.'));}
- function toggle(key){document.querySelector('#qualityBitrateManagerPage #Bitrate'+key+'Mbps').disabled=!document.querySelector('#qualityBitrateManagerPage #Enable'+key).checked;}
- rules.forEach(([key])=>document.querySelector('#qualityBitrateManagerPage #Enable'+key).addEventListener('change',()=>toggle(key)));
- document.querySelector('#qualityBitrateManagerPage').addEventListener('pageshow',()=>{Dashboard.showLoadingMsg();ApiClient.getPluginConfiguration(pluginId).then(c=>{document.querySelector('#qualityBitrateManagerPage #StandardBitrateMbps').value=c.StandardBitrateMbps;rules.forEach(([key])=>{document.querySelector('#qualityBitrateManagerPage #Enable'+key).checked=c['Enable'+key];document.querySelector('#qualityBitrateManagerPage #Bitrate'+key+'Mbps').value=c['Bitrate'+key+'Mbps'];toggle(key);});Dashboard.hideLoadingMsg();});});
- document.querySelector('#qualityBitrateManagerForm').addEventListener('submit',e=>{e.preventDefault();const standard=readNumber(document.querySelector('#qualityBitrateManagerPage #StandardBitrateMbps'));const invalid=!Number.isFinite(standard)||standard<=0||rules.some(([key])=>{const value=readNumber(document.querySelector('#qualityBitrateManagerPage #Bitrate'+key+'Mbps'));return document.querySelector('#qualityBitrateManagerPage #Enable'+key).checked&&(!Number.isFinite(value)||value<=0);});if(invalid){Dashboard.alert('Standardlimit und aktivierte Regeln benötigen eine gültige Zahl größer als 0. Kommawerte sind erlaubt.');return;}Dashboard.showLoadingMsg();ApiClient.getPluginConfiguration(pluginId).then(c=>{c.StandardBitrateMbps=standard;rules.forEach(([key])=>{c['Enable'+key]=document.querySelector('#qualityBitrateManagerPage #Enable'+key).checked;c['Bitrate'+key+'Mbps']=readNumber(document.querySelector('#qualityBitrateManagerPage #Bitrate'+key+'Mbps'));});return ApiClient.updatePluginConfiguration(pluginId,c);}).then(Dashboard.processPluginConfigurationUpdateResult);});
+    const page = document.querySelector('#qualityBitrateManagerPage');
+    const pluginId = 'fb632c57-b35d-4a47-a91d-f7088f0cb15e';
+    const rules = [['2160p', 2160], ['1440p', 1440], ['1080p', 1080], ['720p', 720], ['480p', 480]];
+    const strings = {
+        de: { standardHeading: 'Standard-Bitratenlimit', standardDescription: 'Dieses Limit wird verwendet, wenn keine aktive Qualitätsregel passt.', standardLabel: 'Standardlimit (Mbit/s)', qualityHeading: 'Qualitätsabhängige Limits', qualityDescription: 'Aktiviere nur die gewünschten Stufen. Vorschläge werden jeweils aus der nächsten aktivierten höheren Stufe berechnet.', enable: 'Aktivieren', limit: 'Limit (Mbit/s)', suggestion: 'Vorschlag aus {source}: {value} Mbit/s', apply: 'Vorschlag übernehmen', save: 'Speichern', invalid: 'Standardlimit und aktivierte Regeln benötigen eine gültige Zahl größer als 0. Kommawerte sind erlaubt.' },
+        en: { standardHeading: 'Default bitrate limit', standardDescription: 'This limit is used when no enabled quality rule matches.', standardLabel: 'Default limit (Mbit/s)', qualityHeading: 'Quality-based limits', qualityDescription: 'Enable only the tiers you need. Each suggestion is calculated from the nearest enabled higher tier.', enable: 'Enable', limit: 'Limit (Mbit/s)', suggestion: 'Suggested from {source}: {value} Mbit/s', apply: 'Apply suggestion', save: 'Save', invalid: 'The default limit and all enabled rules require a valid number greater than 0. Decimal values are supported.' }
+    };
+    // Jellyfin applies its selected display language to the root HTML element.
+    // Browser language is only a fallback for clients that do not expose it there.
+    const jellyfinLanguage = document.documentElement.getAttribute('lang') || (window.Globalize && Globalize.culture && Globalize.culture().name) || navigator.language || 'en';
+    const language = jellyfinLanguage.toLowerCase().startsWith('de') ? 'de' : 'en';
+    const t = strings[language];
+    const find = selector => page.querySelector(selector);
+    const readNumber = element => Number(String(element.value).replace(',', '.'));
+    const format = value => Number(value.toFixed(1)).toLocaleString(undefined, { maximumFractionDigits: 1 });
+
+    function localize() {
+        ['standardHeading', 'standardDescription', 'standardLabel', 'qualityHeading', 'qualityDescription'].forEach(id => find('#' + id).textContent = t[id]);
+        find('#saveLabel').textContent = t.save;
+        page.querySelectorAll('.qbmEnableLabel').forEach(element => element.textContent = t.enable);
+        page.querySelectorAll('.qbmLimitLabel').forEach(element => element.textContent = t.limit);
+    }
+
+    function applyLayout() {
+        page.querySelectorAll('.qbmRule').forEach((card, index) => {
+            Object.assign(card.style, { background: 'rgba(255,255,255,.075)', border: '1px solid rgba(255,255,255,.18)', borderRadius: '10px', boxShadow: '0 4px 14px rgba(0,0,0,.24)', marginBottom: '18px', overflow: 'hidden' });
+            Object.assign(card.querySelector('.qbmRuleHeader').style, { alignItems: 'center', display: 'flex', justifyContent: 'space-between', gap: '20px', padding: '14px 18px' });
+            Object.assign(card.querySelector('.qbmRuleTitle').style, { fontSize: '1.15em', fontWeight: '600', margin: '0' });
+            Object.assign(card.querySelector('.qbmRuleEditor').style, { background: 'rgba(0,0,0,.14)', borderTop: '1px solid rgba(255,255,255,.12)', padding: '18px 18px 4px' });
+        });
+    }
+
+    function toggle(key) {
+        const enabled = find('#Enable' + key).checked;
+        const card = find('.qbmRule[data-key="' + key + '"]');
+        card.classList.toggle('isEnabled', enabled);
+        card.style.borderColor = enabled ? '#00a4dc' : 'rgba(255,255,255,.18)';
+        card.style.boxShadow = enabled ? 'inset 4px 0 0 #00a4dc, 0 4px 14px rgba(0,0,0,.28)' : '0 4px 14px rgba(0,0,0,.24)';
+        card.querySelector('.qbmRuleEditor').hidden = !enabled;
+        find('#Bitrate' + key + 'Mbps').disabled = !enabled;
+        updateSuggestions();
+    }
+
+    function updateSuggestions() {
+        let source = null;
+        rules.forEach(([key, height]) => {
+            const enabled = find('#Enable' + key).checked;
+            const value = readNumber(find('#Bitrate' + key + 'Mbps'));
+            const target = find('.qbmRule[data-key="' + key + '"] .qbmSuggestion');
+            target.replaceChildren();
+            target.hidden = true;
+            target.style.display = 'none';
+            if (!enabled) return;
+            if (!source) {
+                if (Number.isFinite(value) && value > 0) source = { key, height, value };
+                return;
+            }
+            const suggestion = Math.max(.1, source.value * height / source.height);
+            const text = document.createElement('span');
+            const sourceTitle = find('.qbmRule[data-key="' + source.key + '"] .qbmRuleTitle').textContent;
+            text.textContent = t.suggestion.replace('{source}', sourceTitle).replace('{value}', format(suggestion));
+            const button = document.createElement('button');
+            button.type = 'button'; button.textContent = t.apply;
+            Object.assign(button.style, { background: '#00a4dc', border: '0', borderRadius: '18px', color: '#fff', cursor: 'pointer', fontWeight: '600', marginLeft: '18px', padding: '7px 14px', whiteSpace: 'nowrap' });
+            button.addEventListener('click', () => { find('#Bitrate' + key + 'Mbps').value = suggestion.toFixed(1); updateSuggestions(); });
+            target.append(text, button);
+            Object.assign(target.style, { alignItems: 'center', background: 'rgba(0,164,220,.10)', border: '1px solid rgba(0,164,220,.30)', borderRadius: '8px', display: 'flex', gap: '16px', justifyContent: 'space-between', marginBottom: '16px', padding: '10px 12px' });
+            target.hidden = false;
+            if (Number.isFinite(value) && value > 0) source = { key, height, value };
+        });
+    }
+
+    rules.forEach(([key]) => {
+        find('#Enable' + key).addEventListener('change', () => toggle(key));
+        find('#Bitrate' + key + 'Mbps').addEventListener('input', updateSuggestions);
+    });
+
+    page.addEventListener('pageshow', () => {
+        Dashboard.showLoadingMsg();
+        ApiClient.getPluginConfiguration(pluginId).then(config => {
+            find('#StandardBitrateMbps').value = config.StandardBitrateMbps;
+            rules.forEach(([key]) => { find('#Enable' + key).checked = config['Enable' + key]; find('#Bitrate' + key + 'Mbps').value = config['Bitrate' + key + 'Mbps']; toggle(key); });
+            updateSuggestions(); Dashboard.hideLoadingMsg();
+        });
+    });
+
+    find('#qualityBitrateManagerForm').addEventListener('submit', event => {
+        event.preventDefault();
+        const standard = readNumber(find('#StandardBitrateMbps'));
+        const invalid = !Number.isFinite(standard) || standard <= 0 || rules.some(([key]) => find('#Enable' + key).checked && (!Number.isFinite(readNumber(find('#Bitrate' + key + 'Mbps'))) || readNumber(find('#Bitrate' + key + 'Mbps')) <= 0));
+        if (invalid) { Dashboard.alert(t.invalid); return; }
+        Dashboard.showLoadingMsg();
+        ApiClient.getPluginConfiguration(pluginId).then(config => {
+            config.StandardBitrateMbps = standard;
+            rules.forEach(([key]) => { config['Enable' + key] = find('#Enable' + key).checked; config['Bitrate' + key + 'Mbps'] = readNumber(find('#Bitrate' + key + 'Mbps')); });
+            return ApiClient.updatePluginConfiguration(pluginId, config);
+        }).then(Dashboard.processPluginConfigurationUpdateResult);
+    });
+    localize();
+    applyLayout();
 })();
 </script></div></body></html>
