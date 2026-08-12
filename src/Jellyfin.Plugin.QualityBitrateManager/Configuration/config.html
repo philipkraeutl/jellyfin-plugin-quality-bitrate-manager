@@ -19,6 +19,16 @@
         #qualityBitrateManagerPage .qbmSuggestion button { background: var(--theme-primary-color); border: 0; border-radius: .35em; color: #fff; cursor: pointer; font-weight: 600; padding: .45em .8em; white-space: nowrap; }
         #qualityBitrateManagerPage .qbmSuggestion[hidden] { display: none !important; }
         #qualityBitrateManagerPage .qbmSave { margin-top: 1.5em; }
+        #qualityBitrateManagerPage .qbmHelp { align-items: center; background: rgba(0,164,220,.08); border: 1px solid rgba(0,164,220,.28); border-radius: .65em; display: flex; gap: 1em; justify-content: space-between; margin: 0 0 1.4em; padding: 1em 1.1em; }
+        #qualityBitrateManagerPage .qbmHelp p { margin: 0; }
+        #qualityBitrateManagerPage .qbmHelpButton, #qualityBitrateManagerPage .qbmPrimaryButton { background: #00a4dc; border: 0; border-radius: 1.4em; color: #fff; cursor: pointer; font-weight: 600; padding: .65em 1.1em; white-space: nowrap; }
+        #qualityBitrateManagerPage .qbmModal { align-items: center; background: rgba(0,0,0,.72); bottom: 0; display: flex; justify-content: center; left: 0; padding: 1.2em; position: fixed; right: 0; top: 0; z-index: 10000; }
+        #qualityBitrateManagerPage .qbmModal[hidden] { display: none !important; }
+        #qualityBitrateManagerPage .qbmDialog { background: #202020; border: 1px solid rgba(255,255,255,.18); border-radius: .8em; box-shadow: 0 1em 3em rgba(0,0,0,.55); max-height: 90vh; max-width: 36em; overflow: auto; padding: 1.4em; width: 100%; }
+        #qualityBitrateManagerPage .qbmDialogHeader { align-items: center; display: flex; justify-content: space-between; }
+        #qualityBitrateManagerPage .qbmClose { background: transparent; border: 0; color: inherit; cursor: pointer; font-size: 1.8em; padding: .2em .4em; }
+        #qualityBitrateManagerPage .qbmResult { background: rgba(255,255,255,.07); border-radius: .55em; line-height: 1.7; margin: 1em 0; padding: 1em; }
+        #qualityBitrateManagerPage .qbmDialogActions { display: flex; gap: .8em; justify-content: flex-end; margin-top: 1.2em; }
     </style>
 <div id="qualityBitrateManagerPage" data-role="page" class="page type-interior pluginConfigurationPage" data-require="emby-input,emby-button,emby-checkbox">
 <div data-role="content"><div class="content-primary"><form id="qualityBitrateManagerForm">
@@ -28,6 +38,7 @@
 
     <h2 id="qualityHeading">Qualitätsabhängige Limits</h2>
     <p class="qbmIntro" id="qualityDescription">Aktiviere nur die gewünschten Stufen. Vorschläge werden jeweils aus der nächsten aktivierten höheren Stufe berechnet.</p>
+    <div class="qbmHelp"><p id="helpPrompt">Du weißt nicht, wie du die Bitratenlimits vergeben sollst?</p><button id="openCalculator" type="button" class="qbmHelpButton" style="background:#00a4dc;border:0;border-radius:18px;color:#fff;cursor:pointer;font-weight:600;padding:7px 14px;white-space:nowrap">Bitraten-Assistent verwenden</button></div>
     <div id="qualityRules">
         <div class="qbmRule" data-key="2160p"><div class="qbmRuleHeader"><h3 class="qbmRuleTitle">2160p / 4K / UHD</h3><div class="checkboxContainer"><label class="emby-checkbox-label"><input id="Enable2160p" type="checkbox" is="emby-checkbox"><span class="qbmEnableLabel">Aktivieren</span></label></div></div><div class="qbmRuleEditor"><div class="qbmSuggestion" hidden></div><div class="inputContainer"><label class="inputLabel qbmLimitLabel" for="Bitrate2160pMbps"></label><input id="Bitrate2160pMbps" type="number" min="0.1" step="0.1" required is="emby-input"></div></div></div>
         <div class="qbmRule" data-key="1440p"><div class="qbmRuleHeader"><h3 class="qbmRuleTitle">1440p / QHD</h3><div class="checkboxContainer"><label class="emby-checkbox-label"><input id="Enable1440p" type="checkbox" is="emby-checkbox"><span class="qbmEnableLabel">Aktivieren</span></label></div></div><div class="qbmRuleEditor"><div class="qbmSuggestion" hidden></div><div class="inputContainer"><label class="inputLabel qbmLimitLabel" for="Bitrate1440pMbps"></label><input id="Bitrate1440pMbps" type="number" min="0.1" step="0.1" required is="emby-input"></div></div></div>
@@ -37,26 +48,61 @@
     </div>
     <button is="emby-button" type="submit" class="raised button-submit block qbmSave"><span id="saveLabel">Speichern</span></button>
 </form></div></div>
+<div id="bitrateCalculator" class="qbmModal" hidden style="display:none"><div class="qbmDialog" role="dialog" aria-modal="true" aria-labelledby="calculatorTitle">
+    <div class="qbmDialogHeader"><h2 id="calculatorTitle">Bitraten-Assistent</h2><button id="closeCalculator" class="qbmClose" type="button" aria-label="Schließen">×</button></div>
+    <p class="qbmIntro" id="calculatorDescription">Die Berechnung ist eine Orientierung. Tatsächliche Ergebnisse hängen von Codec, Inhalt, Client und Transcoder ab.</p>
+    <div class="inputContainer"><label class="inputLabel" id="uploadLabel" for="UploadMbps">Uploadrate des Internetanschlusses (Mbit/s)</label><input id="UploadMbps" type="number" min="0.1" step="0.1" value="50" is="emby-input"></div>
+    <div class="inputContainer"><label class="inputLabel" id="shareLabel" for="JellyfinSharePercent">Davon für Jellyfin (%)</label><input id="JellyfinSharePercent" type="number" min="1" max="100" step="1" value="95" is="emby-input"></div>
+    <h3 id="streamMixHeading">Erwartete gleichzeitige Streams nach Qualität</h3>
+    <p class="qbmIntro" id="streamMixDescription">Trage die höchste Anzahl ein, die voraussichtlich gleichzeitig je Qualitätsstufe abgespielt wird.</p>
+    <div class="inputContainer"><label class="inputLabel" id="streams2160Label" for="Streams2160p">2160p / 4K / UHD Streams</label><input id="Streams2160p" type="number" min="0" step="1" value="1" is="emby-input"></div>
+    <div class="inputContainer"><label class="inputLabel" id="streams1440Label" for="Streams1440p">1440p / QHD Streams</label><input id="Streams1440p" type="number" min="0" step="1" value="0" is="emby-input"></div>
+    <div class="inputContainer"><label class="inputLabel" id="streams1080Label" for="Streams1080p">1080p / Full HD Streams</label><input id="Streams1080p" type="number" min="0" step="1" value="1" is="emby-input"></div>
+    <div class="inputContainer"><label class="inputLabel" id="streams720Label" for="Streams720p">720p / HD Streams</label><input id="Streams720p" type="number" min="0" step="1" value="0" is="emby-input"></div>
+    <div class="inputContainer"><label class="inputLabel" id="streams480Label" for="Streams480p">480p / SD Streams</label><input id="Streams480p" type="number" min="0" step="1" value="0" is="emby-input"><div class="fieldDescription" id="userCountHint">Jellyfin-Benutzer: wird geladen …</div></div>
+    <div class="checkboxContainer"><label class="emby-checkbox-label"><input id="HardwareTranscoding" type="checkbox" is="emby-checkbox"><span id="hardwareLabel">Hardware-Transcoding mit effizientem AV1/HEVC-Profil verwenden</span></label></div>
+    <div id="minimumModeContainer" class="checkboxContainer" hidden style="display:none;margin-left:2.5em"><label class="emby-checkbox-label"><input id="MinimumBitrates" type="checkbox" is="emby-checkbox"><span id="minimumBitratesLabel">Minimalwerte für maximale gleichzeitige Streams verwenden</span></label><div class="fieldDescription" id="minimumBitratesDescription">Verwendet sparsame feste Richtwerte und verteilt freie Bandbreite nicht zusätzlich.</div></div>
+    <div id="calculatorResult" class="qbmResult"></div>
+    <div id="calculatorWarning" hidden style="display:none"></div>
+    <div class="qbmDialogActions"><button id="recalculate" type="button" class="qbmHelpButton">Neu berechnen</button><button id="applyCalculation" type="button" class="qbmPrimaryButton">Werte übernehmen</button></div>
+</div></div>
 <script type="text/javascript">
 (function () {
     const page = document.querySelector('#qualityBitrateManagerPage');
     const pluginId = 'fb632c57-b35d-4a47-a91d-f7088f0cb15e';
     const rules = [['2160p', 2160], ['1440p', 1440], ['1080p', 1080], ['720p', 720], ['480p', 480]];
     const strings = {
-        de: { standardHeading: 'Standard-Bitratenlimit', standardDescription: 'Dieses Limit wird verwendet, wenn keine aktive Qualitätsregel passt.', standardLabel: 'Standardlimit (Mbit/s)', qualityHeading: 'Qualitätsabhängige Limits', qualityDescription: 'Aktiviere nur die gewünschten Stufen. Vorschläge werden jeweils aus der nächsten aktivierten höheren Stufe berechnet.', enable: 'Aktivieren', limit: 'Limit (Mbit/s)', suggestion: 'Vorschlag aus {source}: {value} Mbit/s', apply: 'Vorschlag übernehmen', save: 'Speichern', invalid: 'Standardlimit und aktivierte Regeln benötigen eine gültige Zahl größer als 0. Kommawerte sind erlaubt.' },
-        en: { standardHeading: 'Default bitrate limit', standardDescription: 'This limit is used when no enabled quality rule matches.', standardLabel: 'Default limit (Mbit/s)', qualityHeading: 'Quality-based limits', qualityDescription: 'Enable only the tiers you need. Each suggestion is calculated from the nearest enabled higher tier.', enable: 'Enable', limit: 'Limit (Mbit/s)', suggestion: 'Suggested from {source}: {value} Mbit/s', apply: 'Apply suggestion', save: 'Save', invalid: 'The default limit and all enabled rules require a valid number greater than 0. Decimal values are supported.' }
+        de: { standardHeading: 'Standard-Bitratenlimit', standardDescription: 'Dieses Limit wird verwendet, wenn keine aktive Qualitätsregel passt.', standardLabel: 'Standardlimit (Mbit/s)', qualityHeading: 'Qualitätsabhängige Limits', qualityDescription: 'Aktiviere nur die gewünschten Stufen. Vorschläge werden jeweils aus der nächsten aktivierten höheren Stufe berechnet.', enable: 'Aktivieren', limit: 'Limit (Mbit/s)', suggestion: 'Vorschlag aus {source}: {value} Mbit/s', apply: 'Vorschlag übernehmen', save: 'Speichern', invalid: 'Standardlimit und aktivierte Regeln benötigen eine gültige Zahl größer als 0. Kommawerte sind erlaubt.', helpPrompt: 'Du weißt nicht, wie du die Bitratenlimits vergeben sollst?', openCalculator: 'Bitraten-Assistent verwenden', calculatorTitle: 'Bitraten-Assistent', close: 'Schließen', calculatorDescription: 'Die Berechnung ist eine Orientierung. Tatsächliche Ergebnisse hängen von Codec, Inhalt, Client und Transcoder ab.', uploadLabel: 'Uploadrate des Internetanschlusses (Mbit/s)', shareLabel: 'Davon für Jellyfin (%)', streamsLabel: 'Erwartete gleichzeitige Streams', hardwareLabel: 'Hardware-Transcoding mit effizientem AV1/HEVC-Profil verwenden', recalculate: 'Neu berechnen', applyCalculation: 'Werte übernehmen', users: 'Vorhandene Jellyfin-Benutzer: {count}', usersUnknown: 'Benutzerzahl konnte nicht geladen werden.', available: 'Für Jellyfin verfügbar', perStream: 'Budget pro gleichzeitigem Stream', profileHardware: 'Profil: Hardware-Transcoding, für effizientes AV1/HEVC optimiert', profileGeneral: 'Profil: konservativ für Direct Play bzw. allgemeines Transcoding', calculationInvalid: 'Bitte gültige Werte größer als 0 eingeben.', applied: 'Die berechneten Werte wurden übernommen. Bitte anschließend die Konfiguration speichern.' },
+        en: { standardHeading: 'Default bitrate limit', standardDescription: 'This limit is used when no enabled quality rule matches.', standardLabel: 'Default limit (Mbit/s)', qualityHeading: 'Quality-based limits', qualityDescription: 'Enable only the tiers you need. Each suggestion is calculated from the nearest enabled higher tier.', enable: 'Enable', limit: 'Limit (Mbit/s)', suggestion: 'Suggested from {source}: {value} Mbit/s', apply: 'Apply suggestion', save: 'Save', invalid: 'The default limit and all enabled rules require a valid number greater than 0. Decimal values are supported.', helpPrompt: 'Not sure how to assign your bitrate limits?', openCalculator: 'Use bitrate assistant', calculatorTitle: 'Bitrate setup assistant', close: 'Close', calculatorDescription: 'This calculation is guidance. Actual results depend on codec, content, client, and transcoder.', uploadLabel: 'Internet connection upload rate (Mbit/s)', shareLabel: 'Share available to Jellyfin (%)', streamsLabel: 'Expected concurrent streams', hardwareLabel: 'Use hardware transcoding with an efficient AV1/HEVC profile', recalculate: 'Recalculate', applyCalculation: 'Apply values', users: 'Existing Jellyfin users: {count}', usersUnknown: 'Could not load the user count.', available: 'Available to Jellyfin', perStream: 'Budget per concurrent stream', profileHardware: 'Profile: hardware transcoding optimized for efficient AV1/HEVC', profileGeneral: 'Profile: conservative for Direct Play or general transcoding', calculationInvalid: 'Please enter valid values greater than 0.', applied: 'The calculated values were applied. Remember to save the configuration.' }
     };
     // Jellyfin applies its selected display language to the root HTML element.
     // Browser language is only a fallback for clients that do not expose it there.
     const jellyfinLanguage = document.documentElement.getAttribute('lang') || (window.Globalize && Globalize.culture && Globalize.culture().name) || navigator.language || 'en';
     const language = jellyfinLanguage.toLowerCase().startsWith('de') ? 'de' : 'en';
     const t = strings[language];
+    Object.assign(t, language === 'de' ? {
+        streamMixHeading: 'Erwartete gleichzeitige Streams nach Qualität', streamMixDescription: 'Trage ein, wie viele Streams je Qualitätsstufe voraussichtlich gleichzeitig laufen.',
+        streams2160Label: '2160p / 4K / UHD Streams', streams1440Label: '1440p / QHD Streams', streams1080Label: '1080p / Full HD Streams', streams720Label: '720p / HD Streams', streams480Label: '480p / SD Streams',
+        totalStreams: 'Gleichzeitige Streams insgesamt', requested: 'Bandbreite für das gewählte Profil', scale: 'Anpassungsfaktor wegen verfügbarer Bandbreite',
+        fourKWarning: 'Warnung: Der berechnete 4K-Wert liegt unter 6 Mbit/s. Selbst bei AV1 ist nicht garantiert, dass der Client 4K beibehält; Jellyfin kann auf 1080p / Full HD heruntertranskodieren.',
+        zeroStreams: 'Mindestens eine Stream-Anzahl muss größer als 0 sein.'
+        ,minimumBitratesLabel: 'Minimalwerte für maximale gleichzeitige Streams verwenden', minimumBitratesDescription: 'Verwendet sparsame feste AV1/HEVC-Richtwerte und verteilt freie Bandbreite nicht zusätzlich.', profileMinimum: 'Profil: Hardware-Transcoding mit Minimalwerten für maximale Parallelität', minimumOverbooked: 'Warnung: Die festen Minimalwerte benötigen zusammen {requested} Mbit/s, verfügbar sind aber nur {available} Mbit/s. Die Werte bleiben wie gewünscht unverändert. Bei gleichzeitiger Wiedergabe aller eingetragenen Streams kann es zu Pufferung, Fehlern oder niedrigerer Auflösung kommen.', fourKWarning: 'Warnung: Der berechnete 4K-Wert liegt unter 6,5 Mbit/s. Selbst bei AV1 ist nicht garantiert, dass der Client 4K beibehält; Jellyfin kann auf 1080p / Full HD heruntertranskodieren.'
+    } : {
+        streamMixHeading: 'Expected concurrent streams by quality', streamMixDescription: 'Enter how many streams of each quality tier are expected to run concurrently.',
+        streams2160Label: '2160p / 4K / UHD streams', streams1440Label: '1440p / QHD streams', streams1080Label: '1080p / Full HD streams', streams720Label: '720p / HD streams', streams480Label: '480p / SD streams',
+        totalStreams: 'Total concurrent streams', requested: 'Bandwidth required by the selected profile', scale: 'Scaling factor due to available bandwidth',
+        fourKWarning: 'Warning: The calculated 4K value is below 6 Mbit/s. Even with AV1, retaining 4K is not guaranteed; Jellyfin may transcode down to 1080p / Full HD.',
+        zeroStreams: 'At least one stream count must be greater than 0.'
+        ,minimumBitratesLabel: 'Use minimum values for maximum concurrent streams', minimumBitratesDescription: 'Uses efficient fixed AV1/HEVC guidelines and does not distribute spare bandwidth.', profileMinimum: 'Profile: hardware transcoding with minimum values for maximum concurrency', minimumOverbooked: 'Warning: The fixed minimum values require {requested} Mbit/s, but only {available} Mbit/s is available. The values remain unchanged as requested. Playing all entered streams concurrently may cause buffering, failures, or a lower resolution.', fourKWarning: 'Warning: The calculated 4K value is below 6.5 Mbit/s. Even with AV1, retaining 4K is not guaranteed; Jellyfin may transcode down to 1080p / Full HD.'
+    });
     const find = selector => page.querySelector(selector);
     const readNumber = element => Number(String(element.value).replace(',', '.'));
     const format = value => Number(value.toFixed(1)).toLocaleString(undefined, { maximumFractionDigits: 1 });
+    let calculatedValues = null;
 
     function localize() {
-        ['standardHeading', 'standardDescription', 'standardLabel', 'qualityHeading', 'qualityDescription'].forEach(id => find('#' + id).textContent = t[id]);
+        ['standardHeading', 'standardDescription', 'standardLabel', 'qualityHeading', 'qualityDescription', 'helpPrompt', 'openCalculator', 'calculatorTitle', 'calculatorDescription', 'uploadLabel', 'shareLabel', 'streamMixHeading', 'streamMixDescription', 'streams2160Label', 'streams1440Label', 'streams1080Label', 'streams720Label', 'streams480Label', 'hardwareLabel', 'minimumBitratesLabel', 'minimumBitratesDescription', 'recalculate', 'applyCalculation'].forEach(id => find('#' + id).textContent = t[id]);
+        find('#closeCalculator').setAttribute('aria-label', t.close);
         find('#saveLabel').textContent = t.save;
         page.querySelectorAll('.qbmEnableLabel').forEach(element => element.textContent = t.enable);
         page.querySelectorAll('.qbmLimitLabel').forEach(element => element.textContent = t.limit);
@@ -69,6 +115,99 @@
             Object.assign(card.querySelector('.qbmRuleTitle').style, { fontSize: '1.15em', fontWeight: '600', margin: '0' });
             Object.assign(card.querySelector('.qbmRuleEditor').style, { background: 'rgba(0,0,0,.14)', borderTop: '1px solid rgba(255,255,255,.12)', padding: '18px 18px 4px' });
         });
+        Object.assign(find('.qbmHelp').style, { alignItems: 'center', background: 'rgba(0,164,220,.08)', border: '1px solid rgba(0,164,220,.28)', borderRadius: '10px', display: 'flex', gap: '20px', justifyContent: 'space-between', marginBottom: '22px', padding: '16px 18px' });
+        Object.assign(find('#openCalculator').style, { background: '#00a4dc', border: '0', borderRadius: '18px', color: '#fff', cursor: 'pointer', fontWeight: '600', padding: '7px 14px', whiteSpace: 'nowrap' });
+        const modal = find('#bitrateCalculator');
+        Object.assign(modal.style, { alignItems: 'center', background: 'rgba(0,0,0,.78)', bottom: '0', display: 'none', justifyContent: 'center', left: '0', padding: '20px', position: 'fixed', right: '0', top: '0', zIndex: '100000' });
+        const dialog = find('.qbmDialog');
+        Object.assign(dialog.style, { background: '#202020', border: '1px solid rgba(255,255,255,.20)', borderRadius: '12px', boxShadow: '0 18px 60px rgba(0,0,0,.65)', boxSizing: 'border-box', maxHeight: '88vh', maxWidth: '580px', overflowY: 'auto', padding: '22px', width: '100%' });
+        Object.assign(find('.qbmDialogHeader').style, { alignItems: 'center', display: 'flex', justifyContent: 'space-between', marginBottom: '8px' });
+        Object.assign(find('#closeCalculator').style, { background: 'transparent', border: '0', color: 'inherit', cursor: 'pointer', fontSize: '28px', lineHeight: '1', padding: '6px 10px' });
+        Object.assign(find('#calculatorResult').style, { background: 'rgba(255,255,255,.07)', borderRadius: '8px', lineHeight: '1.65', margin: '18px 0', padding: '14px' });
+        Object.assign(find('.qbmDialogActions').style, { display: 'flex', gap: '12px', justifyContent: 'flex-end', marginTop: '20px' });
+        Object.assign(find('#recalculate').style, { background: 'transparent', border: '2px solid #00a4dc', borderRadius: '18px', color: '#00a4dc', cursor: 'pointer', fontWeight: '600', padding: '6px 14px' });
+        Object.assign(find('#applyCalculation').style, { background: '#00a4dc', border: '2px solid #00a4dc', borderRadius: '18px', color: '#fff', cursor: 'pointer', fontWeight: '600', padding: '6px 14px' });
+    }
+
+    function calculateBitrates() {
+        const upload = readNumber(find('#UploadMbps'));
+        const share = readNumber(find('#JellyfinSharePercent'));
+        const counts = Object.fromEntries(rules.map(([key]) => [key, readNumber(find('#Streams' + key.replace('p', '') + 'p'))]));
+        const totalStreams = Object.values(counts).reduce((sum, count) => sum + count, 0);
+        const result = find('#calculatorResult');
+        const warning = find('#calculatorWarning');
+        warning.hidden = true; warning.style.display = 'none';
+        if (![upload, share, ...Object.values(counts)].every(Number.isFinite) || upload <= 0 || share <= 0 || share > 100 || Object.values(counts).some(count => count < 0 || !Number.isInteger(count))) {
+            result.textContent = t.calculationInvalid; calculatedValues = null; return;
+        }
+        if (totalStreams < 1) { result.textContent = t.zeroStreams; calculatedValues = null; return; }
+        const available = upload * share / 100;
+        const hardware = find('#HardwareTranscoding').checked;
+        const minimumMode = hardware && find('#MinimumBitrates').checked;
+        const profile = hardware
+            ? { '2160p': 6.5, '1440p': 4.3, '1080p': 3.25, '720p': 2.2, '480p': 1.45 }
+            : { '2160p': 35, '1440p': 23.3, '1080p': 17.5, '720p': 11.7, '480p': 7.8 };
+        const requested = rules.reduce((sum, [key]) => sum + counts[key] * profile[key], 0);
+        const constrained = available < requested;
+        const scale = constrained && !minimumMode ? available / requested : 1;
+        const surplusPerStream = constrained || minimumMode ? 0 : (available - requested) / totalStreams;
+        calculatedValues = {
+            counts: counts,
+            standard: Math.max(.1, available / totalStreams),
+            '2160p': Math.max(.1, profile['2160p'] * scale + (counts['2160p'] > 0 ? surplusPerStream : 0)),
+            '1440p': Math.max(.1, profile['1440p'] * scale + (counts['1440p'] > 0 ? surplusPerStream : 0)),
+            '1080p': Math.max(.1, profile['1080p'] * scale + (counts['1080p'] > 0 ? surplusPerStream : 0)),
+            '720p': Math.max(.1, profile['720p'] * scale + (counts['720p'] > 0 ? surplusPerStream : 0)),
+            '480p': Math.max(.1, profile['480p'] * scale + (counts['480p'] > 0 ? surplusPerStream : 0))
+        };
+        result.replaceChildren();
+        const lines = [
+            t.available + ': ' + format(available) + ' Mbit/s',
+            t.totalStreams + ': ' + totalStreams,
+            t.requested + ': ' + format(requested) + ' Mbit/s',
+            t.scale + ': ' + format(scale * 100) + ' %',
+            (language === 'de' ? 'Zusätzliches Budget je Stream' : 'Additional budget per stream') + ': ' + format(surplusPerStream) + ' Mbit/s',
+            minimumMode ? t.profileMinimum : (hardware ? t.profileHardware : t.profileGeneral),
+            '',
+            '2160p / 4K / UHD: ' + format(calculatedValues['2160p']) + ' Mbit/s',
+            '1440p / QHD: ' + format(calculatedValues['1440p']) + ' Mbit/s',
+            '1080p / Full HD: ' + format(calculatedValues['1080p']) + ' Mbit/s',
+            '720p / HD: ' + format(calculatedValues['720p']) + ' Mbit/s',
+            '480p / SD: ' + format(calculatedValues['480p']) + ' Mbit/s'
+        ];
+        lines.forEach((line, index) => { if (index) result.append(document.createElement('br')); result.append(document.createTextNode(line)); });
+        const warnings = [];
+        if (minimumMode && constrained) warnings.push(t.minimumOverbooked.replace('{requested}', format(requested)).replace('{available}', format(available)));
+        if (counts['2160p'] > 0 && calculatedValues['2160p'] < 6.5) warnings.push(t.fourKWarning);
+        if (warnings.length > 0) {
+            warning.textContent = warnings.join('\n\n');
+            warning.hidden = false;
+            Object.assign(warning.style, { background: 'rgba(255,170,0,.14)', border: '1px solid rgba(255,170,0,.65)', borderRadius: '8px', color: '#ffd27a', display: 'block', lineHeight: '1.45', margin: '0 0 18px', padding: '12px 14px', whiteSpace: 'pre-line' });
+        }
+    }
+
+    function showCalculator() {
+        const modal = find('#bitrateCalculator');
+        modal.hidden = false;
+        modal.style.setProperty('display', 'flex', 'important');
+        document.body.style.overflow = 'hidden';
+        calculateBitrates();
+    }
+
+    function toggleMinimumMode() {
+        const visible = find('#HardwareTranscoding').checked;
+        const container = find('#minimumModeContainer');
+        container.hidden = !visible;
+        container.style.display = visible ? 'block' : 'none';
+        if (!visible) find('#MinimumBitrates').checked = false;
+        calculateBitrates();
+    }
+
+    function hideCalculator() {
+        const modal = find('#bitrateCalculator');
+        modal.hidden = true;
+        modal.style.setProperty('display', 'none', 'important');
+        document.body.style.overflow = '';
     }
 
     function toggle(key) {
@@ -116,6 +255,22 @@
         find('#Bitrate' + key + 'Mbps').addEventListener('input', updateSuggestions);
     });
 
+    find('#openCalculator').addEventListener('click', showCalculator);
+    find('#closeCalculator').addEventListener('click', hideCalculator);
+    find('#recalculate').addEventListener('click', calculateBitrates);
+    ['UploadMbps', 'JellyfinSharePercent', 'Streams2160p', 'Streams1440p', 'Streams1080p', 'Streams720p', 'Streams480p', 'MinimumBitrates'].forEach(id => find('#' + id).addEventListener('change', calculateBitrates));
+    find('#HardwareTranscoding').addEventListener('change', toggleMinimumMode);
+    find('#bitrateCalculator').addEventListener('click', event => { if (event.target === find('#bitrateCalculator')) hideCalculator(); });
+    document.addEventListener('keydown', event => { if (event.key === 'Escape' && !find('#bitrateCalculator').hidden) hideCalculator(); });
+    find('#applyCalculation').addEventListener('click', () => {
+        calculateBitrates();
+        if (!calculatedValues) return;
+        find('#StandardBitrateMbps').value = calculatedValues.standard.toFixed(1);
+        rules.forEach(([key]) => { find('#Enable' + key).checked = calculatedValues.counts[key] > 0; find('#Bitrate' + key + 'Mbps').value = calculatedValues[key].toFixed(1); toggle(key); });
+        hideCalculator();
+        Dashboard.alert(t.applied);
+    });
+
     page.addEventListener('pageshow', () => {
         Dashboard.showLoadingMsg();
         ApiClient.getPluginConfiguration(pluginId).then(config => {
@@ -123,6 +278,7 @@
             rules.forEach(([key]) => { find('#Enable' + key).checked = config['Enable' + key]; find('#Bitrate' + key + 'Mbps').value = config['Bitrate' + key + 'Mbps']; toggle(key); });
             updateSuggestions(); Dashboard.hideLoadingMsg();
         });
+        if (ApiClient.getUsers) ApiClient.getUsers().then(users => { find('#userCountHint').textContent = t.users.replace('{count}', users.length); }).catch(() => { find('#userCountHint').textContent = t.usersUnknown; });
     });
 
     find('#qualityBitrateManagerForm').addEventListener('submit', event => {
@@ -139,5 +295,7 @@
     });
     localize();
     applyLayout();
+    toggleMinimumMode();
+    hideCalculator();
 })();
 </script></div></body></html>

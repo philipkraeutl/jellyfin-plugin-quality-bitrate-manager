@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Jellyfin.Plugin.QualityBitrateManager.Tests")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+fa1ec91c9ac19d9430403ed6eb217642b9c36ad3")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+867878502b4c34ed200e0af1bb70ae1ceb35f8fa")]
 [assembly: System.Reflection.AssemblyProductAttribute("Jellyfin.Plugin.QualityBitrateManager.Tests")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Jellyfin.Plugin.QualityBitrateManager.Tests")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
