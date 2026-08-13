@@ -10,11 +10,19 @@
     "versions": [
       {
         "version": "1.0.0.1",
-        "changelog": "Preview build for Jellyfin 12.0 RC3. Test on non-production servers only.",
+        "changelog": "Release for Jellyfin 10.11.x. See the GitHub release notes.",
+        "targetAbi": "10.11.0.0",
+        "sourceUrl": "https://github.com/philipkraeutl/jellyfin-plugin-quality-bitrate-manager/releases/download/v1.0.0.1/quality-bitrate-manager_1.0.0.1.zip",
+        "checksum": "4DE7F4DCB44B5D10778D5AABD2EBF446",
+        "timestamp": "2026-08-13T07:30:18Z"
+      },
+      {
+        "version": "1.0.0.1",
+        "changelog": "Build for Jellyfin 12.0. See the GitHub release notes.",
         "targetAbi": "12.0",
         "sourceUrl": "https://github.com/philipkraeutl/jellyfin-plugin-quality-bitrate-manager/releases/download/v1.0.0.1/quality-bitrate-manager-jellyfin12_1.0.0.1.zip",
-        "checksum": "679C5EDE7D2156A2A16BEEF85FA8F102",
-        "timestamp": "2026-08-13T09:17:00Z"
+        "checksum": "2F00DB8E546D3BC4A0774680C971A960",
+        "timestamp": "2026-08-13T07:30:18Z"
       },
       {
         "version": "1.0.0.0",
