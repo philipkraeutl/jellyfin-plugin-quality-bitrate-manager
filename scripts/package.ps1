@@ -1,17 +1,21 @@
 param(
     [string]$Version = "1.0.0.0",
-    [string]$Configuration = "Release"
+    [string]$Configuration = "Release",
+    [string]$Framework = "net9.0",
+    [string]$JellyfinVersion = "10.11.0",
+    [string]$PackageSuffix = "",
+    [string]$DotnetCommand = "dotnet"
 )
 
 $ErrorActionPreference = "Stop"
 $root = Split-Path -Parent $PSScriptRoot
 $project = Join-Path $root "src/Jellyfin.Plugin.QualityBitrateManager/Jellyfin.Plugin.QualityBitrateManager.csproj"
-$publish = Join-Path $root "src/Jellyfin.Plugin.QualityBitrateManager/bin/$Configuration/net9.0/publish"
+$publish = Join-Path $root "src/Jellyfin.Plugin.QualityBitrateManager/bin/$Configuration/$Framework/publish"
 $artifacts = Join-Path $root "artifacts"
-$archive = Join-Path $artifacts "quality-bitrate-manager_$Version.zip"
+$archive = Join-Path $artifacts "quality-bitrate-manager$PackageSuffix`_$Version.zip"
 $checksum = "$archive.sha256"
 
-dotnet publish $project -c $Configuration
+& $DotnetCommand publish $project -c $Configuration -f $Framework -p:JellyfinTargetFramework=$Framework -p:JellyfinVersion=$JellyfinVersion -p:PluginVersion=$Version
 if ($LASTEXITCODE -ne 0) { throw "dotnet publish failed with exit code $LASTEXITCODE" }
 
 New-Item -ItemType Directory -Force -Path $artifacts | Out-Null

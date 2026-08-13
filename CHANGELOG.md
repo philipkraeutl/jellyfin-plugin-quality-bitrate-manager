@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.0.1 - 2026-08-13
+
+- Added a separately compiled Jellyfin 12.0 RC3 / .NET 10 variant.
+- Added a unified release workflow that publishes Jellyfin 10.11 and 12 packages together.
+- Added both server generations to the shared Jellyfin repository manifest.
+
 ## 1.0.0.0 - 2026-08-12
 
 - Initial public release for Jellyfin 10.11.x.

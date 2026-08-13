@@ -12,11 +12,11 @@ using System.Reflection;
 
 [assembly: System.Reflection.AssemblyCompanyAttribute("Jellyfin.Plugin.QualityBitrateManager")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
-[assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0.0+4c065603eae96f27132b194e57cbfe10e8da125e")]
+[assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.1")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0.1+a49672fa46f0a97254bc25918e9c1001df508190")]
 [assembly: System.Reflection.AssemblyProductAttribute("Jellyfin.Plugin.QualityBitrateManager")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Jellyfin.Plugin.QualityBitrateManager")]
-[assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
+[assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.1")]
 
 // Von der MSBuild WriteCodeFragment-Klasse generiert.
 

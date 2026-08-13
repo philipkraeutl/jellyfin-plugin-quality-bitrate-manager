@@ -16,6 +16,16 @@ Direct link: [Quality Bitrate Manager manifest](https://raw.githubusercontent.co
 
 After saving the repository, open the Jellyfin plugin catalog, select **Quality Bitrate Manager**, install it and restart Jellyfin.
 
+### Jellyfin 12 preview
+
+Jellyfin 12 currently requires a separate .NET 10 binary. Preview builds are tested against Jellyfin 12.0 RC3, but are published through the same repository manifest:
+
+```text
+https://raw.githubusercontent.com/philipkraeutl/jellyfin-plugin-quality-bitrate-manager/main/manifest.json
+```
+
+Jellyfin selects the compatible entry from the manifest: `targetAbi` 10.11.0.0 receives the .NET 9 build, while `targetAbi` 12.0 receives the .NET 10 preview build. The Jellyfin 12 entry is intended for non-production test servers until Jellyfin 12 and its plugin packages are final.
+
 ## Important disclaimer
 
 > [!WARNING]
@@ -36,7 +46,9 @@ The plugin does not modify Jellyfin Core and does not use Reflection, Harmony, b
 
 - Jellyfin Server **10.11.x**
 - .NET 9
-- Plugin version **1.0.0.0**
+- Plugin version **1.0.0.1**
+
+An additional preview build targets Jellyfin 12.0 RC3 and .NET 10.
 
 The release binary is compiled against the oldest supported 10.11 API and CI also verifies it against Jellyfin 10.11.11. Its manifest therefore declares `targetAbi` 10.11.0.0.
 
@@ -74,18 +86,18 @@ The published plugin is written to `src/Jellyfin.Plugin.QualityBitrateManager/bi
 
 ### Automated releases
 
-Every push and pull request runs the build and test workflow. Successful CI runs also provide the compiled plugin DLL as a temporary workflow artifact.
+Every push and pull request tests Jellyfin 10.11.0, 10.11.11 and Jellyfin 12.0 RC3. Successful CI runs provide the corresponding compiled DLLs as temporary workflow artifacts.
 
 The release workflow can be started in either of two ways:
 
 1. Push a version tag such as `v1.0.0.0`.
 2. Open **Actions → Release plugin → Run workflow** and enter `1.0.0.0`.
 
-Before publishing, the workflow verifies that the requested version matches `build.yaml` and all project version fields. It then runs all tests, creates the plugin ZIP and a `.sha256` checksum, updates `manifest.json` with Jellyfin's required MD5 checksum and download URL, and creates a GitHub release with generated release notes. Finally, it commits the updated manifest to the default branch so Jellyfin can discover the new version.
+Before publishing, the single release workflow verifies the version and tests both server generations. It creates a Jellyfin 10.11/.NET 9 ZIP and a Jellyfin 12/.NET 10 ZIP, including SHA-256 files, and attaches all four files to one GitHub release. It then updates both ABI entries in `manifest.json` with Jellyfin's required MD5 checksums and download URLs and commits the manifest to the default branch.
 
 For a normal release, update these files first:
 
-- all three version fields in `src/Jellyfin.Plugin.QualityBitrateManager/Jellyfin.Plugin.QualityBitrateManager.csproj`
+- `PluginVersion` in `src/Jellyfin.Plugin.QualityBitrateManager/Jellyfin.Plugin.QualityBitrateManager.csproj`
 - `build.yaml`
 - `CHANGELOG.md`
 - `manifest.json` when compatibility or plugin metadata changes; version, download URL, checksum and timestamp are updated automatically
