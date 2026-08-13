@@ -1,5 +1,9 @@
 # Quality Bitrate Manager for Jellyfin
 
+<p align="center">
+  <img src="assets/logo.png" alt="Quality Bitrate Manager logo" width="256">
+</p>
+
 Quality Bitrate Manager applies configurable remote bitrate limits according to the original resolution of a video. It supports 2160p/4K, 1440p, 1080p, 720p and 480p, decimal Mbit/s values, concurrent streams, and an integrated bandwidth assistant.
 
 The configuration page automatically uses German when Jellyfin's interface language is German; otherwise it uses English.
