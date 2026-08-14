@@ -5,7 +5,7 @@ version: "1.0.0.1"
 targetAbi: "10.11.0.0"
 framework: "net9.0"
 overview: "Applies per-user remote bitrate limits based on the original video resolution."
-imageUrl: "https://raw.githubusercontent.com/philipkraeutl/jellyfin-plugin-quality-bitrate-manager/main/assets/logo.png"
+imageUrl: "https://raw.githubusercontent.com/philipkraeutl/jellyfin-plugin-quality-bitrate-manager/main/assets/catalog-banner.png"
 description: >
   Dynamically updates Jellyfin's per-user RemoteClientBitrateLimit before playback
   selection, supports concurrent streams, and includes a bandwidth planning assistant.

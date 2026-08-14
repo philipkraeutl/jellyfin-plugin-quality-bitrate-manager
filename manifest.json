@@ -6,7 +6,7 @@
     "description": "Dynamically applies per-user remote bitrate limits based on the original video resolution and includes a bandwidth planning assistant.",
     "owner": "philipkraeutl",
     "overview": "Quality-based remote bitrate limits for Jellyfin",
-    "imageUrl": "https://raw.githubusercontent.com/philipkraeutl/jellyfin-plugin-quality-bitrate-manager/main/assets/logo.png",
+    "imageUrl": "https://raw.githubusercontent.com/philipkraeutl/jellyfin-plugin-quality-bitrate-manager/main/assets/catalog-banner.png",
     "versions": [
       {
         "version": "1.0.0.1",
