@@ -64,14 +64,14 @@ jobs:
 
       - name: Test Jellyfin 12 build
         run: |
-          dotnet restore QualityBitrateManager.slnx -p:JellyfinTargetFramework=net10.0 -p:JellyfinVersion=12.0.0-rc3
-          dotnet test QualityBitrateManager.slnx -c Release --no-restore -p:JellyfinTargetFramework=net10.0 -p:JellyfinVersion=12.0.0-rc3
+          dotnet restore QualityBitrateManager.slnx -p:JellyfinTargetFramework=net10.0 -p:JellyfinVersion=12.0.0
+          dotnet test QualityBitrateManager.slnx -c Release --no-restore -p:JellyfinTargetFramework=net10.0 -p:JellyfinVersion=12.0.0
 
       - name: Package both variants
         shell: pwsh
         run: |
           ./scripts/package.ps1 -Version "${{ steps.version.outputs.version }}" -Framework net9.0 -JellyfinVersion 10.11.0
-          ./scripts/package.ps1 -Version "${{ steps.version.outputs.version }}" -Framework net10.0 -JellyfinVersion 12.0.0-rc3 -PackageSuffix "-jellyfin12"
+          ./scripts/package.ps1 -Version "${{ steps.version.outputs.version }}" -Framework net10.0 -JellyfinVersion 12.0.0 -PackageSuffix "-jellyfin12"
 
       - name: Update both manifest entries
         shell: pwsh
@@ -90,8 +90,8 @@ jobs:
             },
             [ordered]@{
               version = $env:RELEASE_VERSION
-              changelog = "Build for Jellyfin 12.0. See the GitHub release notes."
-              targetAbi = "12.0"
+              changelog = "Release for Jellyfin 12.0. See the GitHub release notes."
+              targetAbi = "12.0.0.0"
               file = "quality-bitrate-manager-jellyfin12_$env:RELEASE_VERSION.zip"
             }
           )
@@ -106,7 +106,7 @@ jobs:
               timestamp = $timestamp
             }
           }
-          $abis = @("10.11.0.0", "12.0")
+          $abis = @("10.11.0.0", "12.0.0.0")
           $olderVersions = @($manifest[0].versions | Where-Object { $_.version -ne $env:RELEASE_VERSION -or $_.targetAbi -notin $abis })
           $manifest[0].versions = @($entries) + $olderVersions
           ConvertTo-Json -InputObject $manifest -Depth 10 | Set-Content manifest.json -Encoding utf8

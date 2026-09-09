@@ -6,7 +6,7 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>$(NoWarn);CS1591</NoWarn>
     <ImplicitUsings>enable</ImplicitUsings>
-    <PluginVersion Condition="'$(PluginVersion)' == ''">1.0.0.1</PluginVersion>
+    <PluginVersion Condition="'$(PluginVersion)' == ''">1.0.0.2</PluginVersion>
     <Version>$(PluginVersion)</Version>
     <AssemblyVersion>$(PluginVersion)</AssemblyVersion>
     <FileVersion>$(PluginVersion)</FileVersion>

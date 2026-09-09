@@ -1,5 +1,5 @@
 param(
-    [string]$Version = "1.0.0.0",
+    [string]$Version = "1.0.0.2",
     [string]$Configuration = "Release",
     [string]$Framework = "net9.0",
     [string]$JellyfinVersion = "10.11.0",

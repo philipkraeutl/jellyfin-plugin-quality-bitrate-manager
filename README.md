@@ -20,15 +20,15 @@ Direct link: [Quality Bitrate Manager manifest](https://raw.githubusercontent.co
 
 After saving the repository, open the Jellyfin plugin catalog, select **Quality Bitrate Manager**, install it and restart Jellyfin.
 
-### Jellyfin 12 preview
+### Jellyfin 12
 
-Jellyfin 12 currently requires a separate .NET 10 binary. Preview builds are tested against Jellyfin 12.0 RC3, but are published through the same repository manifest:
+Jellyfin 12 requires a separate .NET 10 binary. The plugin is built and tested against the final Jellyfin 12.0.0 packages and published through the same repository manifest:
 
 ```text
 https://raw.githubusercontent.com/philipkraeutl/jellyfin-plugin-quality-bitrate-manager/main/manifest.json
 ```
 
-Jellyfin selects the compatible entry from the manifest: `targetAbi` 10.11.0.0 receives the .NET 9 build, while `targetAbi` 12.0 receives the .NET 10 preview build. The Jellyfin 12 entry is intended for non-production test servers until Jellyfin 12 and its plugin packages are final.
+Jellyfin selects the compatible entry from the manifest: `targetAbi` 10.11.0.0 receives the .NET 9 build, while `targetAbi` 12.0.0.0 receives the .NET 10 build.
 
 ## Important disclaimer
 
@@ -50,9 +50,9 @@ The plugin does not modify Jellyfin Core and does not use Reflection, Harmony, b
 
 - Jellyfin Server **10.11.x**
 - .NET 9
-- Plugin version **1.0.0.1**
+- Plugin version **1.0.0.2**
 
-An additional preview build targets Jellyfin 12.0 RC3 and .NET 10.
+An additional build targets the final Jellyfin 12.0 release and .NET 10.
 
 The release binary is compiled against the oldest supported 10.11 API and CI also verifies it against Jellyfin 10.11.11. Its manifest therefore declares `targetAbi` 10.11.0.0.
 
@@ -62,7 +62,7 @@ Jellyfin 10.10.x is not included in this manifest entry. Although the shared sou
 
 ### From a release ZIP
 
-1. Download `quality-bitrate-manager_1.0.0.0.zip` from the GitHub release.
+1. Download the ZIP matching your Jellyfin server from the GitHub release: `quality-bitrate-manager_1.0.0.2.zip` for 10.11 or `quality-bitrate-manager-jellyfin12_1.0.0.2.zip` for 12.0.
 2. Stop Jellyfin.
 3. Create a plugin directory named `Quality Bitrate Manager` inside Jellyfin's plugin directory.
 4. Extract the ZIP into that directory.
@@ -90,12 +90,12 @@ The published plugin is written to `src/Jellyfin.Plugin.QualityBitrateManager/bi
 
 ### Automated releases
 
-Every push and pull request tests Jellyfin 10.11.0, 10.11.11 and Jellyfin 12.0 RC3. Successful CI runs provide the corresponding compiled DLLs as temporary workflow artifacts.
+Every push and pull request tests Jellyfin 10.11.0, 10.11.11 and the final Jellyfin 12.0.0 packages. Successful CI runs provide the corresponding compiled DLLs as temporary workflow artifacts.
 
 The release workflow can be started in either of two ways:
 
-1. Push a version tag such as `v1.0.0.0`.
-2. Open **Actions → Release plugin → Run workflow** and enter `1.0.0.0`.
+1. Push a version tag such as `v1.0.0.2`.
+2. Open **Actions → Release plugin → Run workflow** and enter `1.0.0.2`.
 
 Before publishing, the single release workflow verifies the version and tests both server generations. It creates a Jellyfin 10.11/.NET 9 ZIP and a Jellyfin 12/.NET 10 ZIP, including SHA-256 files, and attaches all four files to one GitHub release. It then updates both ABI entries in `manifest.json` with Jellyfin's required MD5 checksums and download URLs and commits the manifest to the default branch.
 
@@ -185,7 +185,7 @@ Audio-only playback is ignored. Live TV is supported when Jellyfin supplies usab
 - The plugin cannot preserve an arbitrary pre-installation limit because its configured default is the explicit restoration target.
 - Very low bitrate values can cause Jellyfin to select a lower output resolution even when the original source is 4K.
 
-Source references: [MediaInfoHelper 10.11.11](https://github.com/jellyfin/jellyfin/blob/v10.11.11/Jellyfin.Api/Helpers/MediaInfoHelper.cs), [MediaInfoController 10.11.11](https://github.com/jellyfin/jellyfin/blob/v10.11.11/Jellyfin.Api/Controllers/MediaInfoController.cs), [SessionManager 10.11.11](https://github.com/jellyfin/jellyfin/blob/v10.11.11/Emby.Server.Implementations/Session/SessionManager.cs).
+Source references: [MediaInfoHelper 10.11.11](https://github.com/jellyfin/jellyfin/blob/v10.11.11/Jellyfin.Api/Helpers/MediaInfoHelper.cs), [MediaInfoController 10.11.11](https://github.com/jellyfin/jellyfin/blob/v10.11.11/Jellyfin.Api/Controllers/MediaInfoController.cs), [SessionManager 10.11.11](https://github.com/jellyfin/jellyfin/blob/v10.11.11/Emby.Server.Implementations/Session/SessionManager.cs), [MediaInfoHelper 12.0](https://github.com/jellyfin/jellyfin/blob/v12.0/Jellyfin.Api/Helpers/MediaInfoHelper.cs), [MediaInfoController 12.0](https://github.com/jellyfin/jellyfin/blob/v12.0/Jellyfin.Api/Controllers/MediaInfoController.cs), [SessionManager 12.0](https://github.com/jellyfin/jellyfin/blob/v12.0/Emby.Server.Implementations/Session/SessionManager.cs).
 
 ## Development and tests
 

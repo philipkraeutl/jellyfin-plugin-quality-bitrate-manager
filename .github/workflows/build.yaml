@@ -17,7 +17,7 @@ jobs:
           - jellyfin-version: 10.11.11
             framework: net9.0
             dotnet-version: 9.0.x
-          - jellyfin-version: 12.0.0-rc3
+          - jellyfin-version: 12.0.0
             framework: net10.0
             dotnet-version: 10.0.x
     steps:

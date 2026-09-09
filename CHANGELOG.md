@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.0.2 - 2026-09-09
+
+- Rebuilt the Jellyfin 12 variant against the final 12.0.0 packages and .NET 10.
+- Updated CI, release packaging and plugin ABI metadata for the final Jellyfin 12.0 release.
+- Retained a separately compiled Jellyfin 10.11 / .NET 9 variant.
+
 ## 1.0.0.1 - 2026-08-13
 
 - Added a separately compiled Jellyfin 12.0 RC3 / .NET 10 variant.
